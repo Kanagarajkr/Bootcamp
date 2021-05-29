@@ -3,7 +3,6 @@ package Bootcamp;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -13,10 +12,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
-public class EditLegalEntity {
+public class CreateLegalEntityWithoutMandatoryFields {
 
 	public static void main(String[] args) throws InterruptedException {
-		
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--disable-notifications");
 		WebDriverManager.chromedriver().setup();
@@ -40,54 +38,33 @@ public class EditLegalEntity {
 		WebElement LegalEntity = driver.findElement(By.xpath("//p[text()='Legal Entities']"));
 		a.moveToElement(LegalEntity).click().perform();
 		
-	//4. Click on the legal Entities tab 
-		Thread.sleep(5000);
-		WebElement LegalEntity2 = driver.findElementByXPath("(//span[text()='Legal Entities'])[1]");
-		driver.executeScript("arguments[0].click();", LegalEntity2);
+	//4.Click on the Dropdown icon in the legal Entities tab
+		Thread.sleep(6000);
+		WebElement LegalEntitydropdown = driver.findElement(By.xpath("(//span[text()='Legal Entities']//following::div//a//lightning-primitive-icon)[1]/*"));
+		LegalEntitydropdown.click();
 		
-	//5. Search the Legal Entity 'Salesforce Automation by Your Name
-		Actions obj = new Actions(driver);
-		WebElement input = driver.findElementByXPath("//input[@name='LegalEntity-search-input']");
-		input.sendKeys("Salesforce Automation by Kanagaraj");
-		Thread.sleep(3000);
-		driver.findElementByXPath("//*[@data-key='refresh']").click();
-		Thread.sleep(2000);
+	//5.Click on New Legal Entity
+		WebElement newLegalEntity = driver.findElementByXPath("//span[text()='New Legal Entity']");
+		driver.executeScript("arguments[0].click();", newLegalEntity);
 		
-		WebElement dropdown = driver.findElementByXPath("(//span[@class='slds-icon_container slds-icon-utility-down']/span)[1]");
-		driver.executeScript("arguments[0].scrollIntoView();",dropdown );
-		//wait.until(ExpectedConditions.elementToBeClickable(dropdown));
-		Thread.sleep(2000);
-		dropdown.click();
-		WebElement edit = driver.findElementByXPath("//a[@title='Edit']"); 
-		obj.moveToElement(edit).click().build().perform();
-		 
-		//driver.findElementByXPath("(//input[@class=' input'])[1]").clear();		
+	//6. Enter the Company name as 'Testleaf'.
+	//7. Enter Description as 'SalesForce'.
+	//8. Select Status as 'Active'
+	//9. Click on Save
+		
 		driver.findElementByXPath("//span[text()='Company Name']/following::input").sendKeys("Testleaf");
 		driver.findElementByXPath("(//textarea[@role='textbox'])[2]").sendKeys("SalesForce");
 		driver.findElementByXPath("//a[@class='select']").click();
 		driver.findElementByXPath("//a[text()='Active']").click();
 		driver.findElementByXPath("(//span[text()='Save'])[2]").click();
-		WebElement result = driver.findElementByXPath("//span[@class='toastMessage slds-text-heading--small forceActionsText']");
-		wait.until(ExpectedConditions.elementToBeClickable(result));
-		System.out.println(result.getText());
-		wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//span[@class='toastMessage slds-text-heading--small forceActionsText']")));
-		driver.findElementByXPath("//a[@title='Salesforce Automation by Kanagaraj']").click();
 		
-		String finalstatus = driver.findElementByXPath("//span[@title='Status']/following-sibling::div/div/span").getText();
-		System.out.println(finalstatus);
-		if (finalstatus.contains("Active")) {
-			System.out.println("Test case is pass");
-		}
-		else {
-			System.out.println("Test case failed");
-		}
-		driver.close();
+	//10. Verify the Alert message (Complete this field) displayed for Name
+		WebElement alert = driver.findElementByXPath("//li[@class='form-element__help']");
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//li[@class='form-element__help']")));
+		System.out.println("Alert message received: " +alert.getText());
+		
+				
 
 	}
 
 }
-
-//notes
-//Reduce the wait in last step.
-
-
